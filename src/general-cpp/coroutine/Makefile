@@ -1,0 +1,28 @@
+
+# -L is the path to the directories containing the libraries. A search path for libraries.
+# -l is the name of the library you want to link to.
+# -I tells gcc to add the directory ../include to the include path it uses to search for include files.
+CFLAGS = -std=c++11 -g -Wall
+# INCLUDE BASE DIRECTORY AND BOOST DIRECTORY FOR HEADERS
+LDFLAGS = -L/opt/local/lib
+LDLIBS = -lboost_coroutine-mt -lboost_system-mt
+all:
+	g++ $(CFLAGS) -I/opt/local/include  $(LDFLAGS) $(LDLIBS)  -o run-this main.cpp 
+
+clean:
+	rm *.o run-this
+
+
+
+#CFLAGS= -std=c++11 -g -Wall
+# INCLUDE BASE DIRECTORY AND BOOST DIRECTORY FOR HEADERS
+#LDFLAGS := -I/opt/local/include
+#LDLIBS := -L/opt/local/lib
+#LDLIBS := -lboost_system-mt -lboost_coroutine-mt 
+
+#all:
+#	g++ $(CFLAGS) -L/opt/local/lib $(LDFAGS) $(LDLIBS)   -o run-this main.cpp 
+
+#clean:
+#	rm *.o run-this
+
