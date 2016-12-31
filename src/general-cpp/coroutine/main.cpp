@@ -45,13 +45,6 @@ void printPair(coroutine<std::pair<int, std::string>>::pull_type &source){
 		std::cout << "pair #" << ++receivedPair << ": " << p.first << ", " << p.second << std::endl;
 }
 
-class S{
-public:
-	void func(){
-		;
-	}
-};
-
 int main() {
 	std::cout << "caller: pull_type, callee: push_type, with no input argument or return value" << std::endl;
 	coroutine<void>::pull_type mySource1{printUpTo10};
