@@ -13,7 +13,7 @@ else
 	ifeq ($(OS), Linux)
 		LDFLAGS = -L/usr/lib/x86_64-linux-gnu/
 		LDLIBS = -lboost_coroutine -lboost_system
-		CINCLUDES = -I/usr/include/
+		CINCLUDES = -I/usr/include/boost
 	else
 		$(error This operating system is not supported)
 	endif
@@ -22,10 +22,11 @@ endif
 CFLAGS = -std=c++11 -g -Wall
 # INCLUDE BASE DIRECTORY AND BOOST DIRECTORY FOR HEADERS
 all:
-	g++ $(CFLAGS) $(CINCLUDES) $(LDFLAGS) $(LDLIBS)  -o run-this main.cpp 
+	g++ $(CFLAGS) $(CINCLUDES) $(LDFLAGS) $(LDLIBS)  -o coroutine_simple coroutine_simple.cpp 
+	g++ $(CFLAGS) $(CINCLUDES) $(LDFLAGS) $(LDLIBS)  -o coroutine_with_class coroutine_with_class.cpp 
 
 clean:
-	rm *.o run-this
+	rm -rf *.o coroutine_simple coroutine_with_class *.dSYM
 
 
 
