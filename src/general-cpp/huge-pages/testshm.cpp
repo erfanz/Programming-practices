@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <string>
 
+int shm_key = 124;
+size_t HUGE_PAGESIZE = 2*1024*1024;	// 2MB
 
 int free_shm(int shm_key, void* shm_buf);
 void* allocate_shm(size_t buf_size, int numa_node, int shm_key);
@@ -15,11 +17,13 @@ int main(int argc, char *argv[]) {
 	assert(argc == 2);
 	size_t buf_size = std::stoull(std::string(argv[1]));
 	std::cout << "Allocating " << buf_size << " Bytes (" << ((double)buf_size) / (1024*1024*1024) << " GB)" << std::endl;
-	size_t numa_node = 1;
-	//int shm_key = IPC_PRIVATE;
-	int shm_key = 13;
+	size_t numa_node = 0;
 	
 	// allocate shared memory
+	if (buf_size % HUGE_PAGESIZE != 0 || buf_size < HUGE_PAGESIZE) {
+		std::cerr << "The buffer size has to be a multiple of the page size (hardcoded to be 2MB)" << std::endl;
+		std::exit(EXIT_FAILURE);
+	}
 	void* allocBuff = allocate_shm(buf_size, numa_node, shm_key);
 	
 	// set, and read the value of the buffer
@@ -72,7 +76,7 @@ int free_shm(int shm_key, void* shm_buf) {
 }
 
 void* allocate_shm(size_t buf_size, int numa_node, int shm_key) {
-	int shmid = shmget(shm_key, buf_size, IPC_CREAT | IPC_EXCL | 0666 | SHM_HUGETLB);
+	int shmid = shmget(shm_key, buf_size, IPC_CREAT | 0666 | SHM_HUGETLB);
 	if(shmid == -1) {
 		switch(errno) {
 			case EACCES:
@@ -102,42 +106,34 @@ void* allocate_shm(size_t buf_size, int numa_node, int shm_key) {
 	}
 
 	/* Bind the buffer to this socket */
-	// const unsigned long nodemask = (1 << numa_node);
-	// int ret = mbind(buf, buf_size, MPOL_BIND, &nodemask, 32, 0);
-	// if(ret != 0) {
-	// 	printf("HrdAlloc: SHM malloc error. mbind() failed for key %d\n", shm_key);
-	// 	switch(errno) {
-	//
-	// 		case EFAULT:
-	// 			printf("Part/all of the memory range specified by nodemask and maxnode points outside your accessible address space. (SHM key = %d)\n", shm_key);
-	// 			break;
-	// 		case EINVAL:
-	// 			printf("An invalid value was specified for flags or mode. (SHM key = %d, size = %lu)\n", shm_key, buf_size);
-	// 			std::cout << (char*)buf << std::endl;
-	// 			break;
-	// 		case EIO:
-	// 			printf("MPOL_MF_STRICT was specified and an existing page was already"
-	//               "on a node that does not follow the policy; or MPOL_MF_MOVE or"
-	//               "MPOL_MF_MOVE_ALL was specified and the kernel was unable to"
-	//               "move all existing pages in the range.. (SHM key = %d, size = %lu)\n", shm_key, buf_size);
-	// 			break;
-	// 		case ENOMEM:
-	// 			printf("Insufficient kernel memory was available.. (SHM key = %d, size = %lu)\n", shm_key, buf_size);
-	// 			break;
-	// 		case EPERM:
-	// 			printf("The flags argument included the MPOL_MF_MOVE_ALL flag and the caller does not have the CAP_SYS_NICE privilege");
-	// 			break;
-	// 		default:
-	// 			printf("HrdAlloc: SHM malloc error: Wild SHM error: %s.\n", strerror(errno));
-	// 			break;
-	// 	}
-	//
-	// }
-	//
-	//
+	const unsigned long nodemask = (1 << numa_node);		
+	int ret = mbind(buf, buf_size, MPOL_BIND, &nodemask, 32, 0);
+	if(ret != 0) {
+		printf("SHM malloc error. mbind() failed for key %d\n", shm_key);
+		switch(errno) {
+			case EFAULT:
+				printf("Part/all of the memory range specified by nodemask and maxnode points outside your accessible address space. (SHM key = %d)\n", shm_key);
+				break;
+			case EINVAL:
+				printf("An invalid value was specified (most likely, the requested size is not a multiple of the page size). (SHM key = %d, size = %lu)\n", shm_key, buf_size);
+				break;
+			case EIO:
+				printf("MPOL_MF_STRICT was specified and an existing page was already (SHM key = %d, size = %lu)\n", shm_key, buf_size);
+				break;
+			case ENOMEM:
+				printf("Insufficient kernel memory was available.. (SHM key = %d, size = %lu)\n", shm_key, buf_size);
+				break;
+			case EPERM:
+				printf("The flags argument included the MPOL_MF_MOVE_ALL flag and the caller does not have the CAP_SYS_NICE privilege");
+				break;
+			default:
+				printf("SHM malloc error: Wild SHM error: %s.\n", strerror(errno));
+				break;
+		}
+		std::exit(EXIT_FAILURE);
+	}
+
 	memset(buf, 0, buf_size);	
 	std::cout << "memory is allocated successfully" << std::endl;		
 	return buf;
 }
-
-
