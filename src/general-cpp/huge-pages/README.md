@@ -18,4 +18,4 @@ Then, compile the code using the Makefile, and run the shell script:
 where `REQ_SIZE` is the requested allocation size in bytes.
 Make sure that `REQ_SIZE` is a multiple of the hugepage size (i.e. 2MB).
 
-For more information and list of relevant Linux commands, view the [MORE_INFO.md] tutorial.
+For more information and list of relevant Linux commands, view the [./MORE_INFO.MD] tutorial.
