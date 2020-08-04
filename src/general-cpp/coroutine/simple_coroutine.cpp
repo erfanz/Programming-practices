@@ -6,7 +6,7 @@ On Clang (Mine is 11.0.3):
 clang++ -std=c++2a -stdlib=libc++ simple_coroutine.cpp
 
 On GCC (Mine is 10.2.0):
-gcc-10 -std=c++20 -lstdc++ -fcoroutine simple_coroutine.cpp
+gcc-10 -std=c++20 -lstdc++ -fcoroutines simple_coroutine.cpp
 */
 
 
