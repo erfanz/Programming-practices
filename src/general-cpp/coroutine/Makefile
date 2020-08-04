@@ -21,8 +21,8 @@ else
 
 endif
 all:
-	g++ $(CFLAGS) $(CINCLUDES) $(LDFLAGS) $(LDLIBS)  -o coroutine_simple coroutine_simple.cpp 
-	g++ $(CFLAGS) $(CINCLUDES) $(LDFLAGS) $(LDLIBS)  -o coroutine_with_class coroutine_with_class.cpp 
+	g++ $(CFLAGS) $(CINCLUDES) $(LDFLAGS) $(LDLIBS)  -o boost_coroutine_simple coroutine_simple.cpp 
+	g++ $(CFLAGS) $(CINCLUDES) $(LDFLAGS) $(LDLIBS)  -o boost_coroutine_with_class coroutine_with_class.cpp 
 
 clean:
 	rm -rf *.o coroutine_simple coroutine_with_class *.dSYM
