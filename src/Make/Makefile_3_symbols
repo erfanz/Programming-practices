@@ -1,0 +1,33 @@
+# the content of this tutorial is largely taken from "https://learnxinyminutes.com/docs/make/".
+
+# To execute:
+# make -f Makefile_3_symbols
+		
+all: explainer
+	@echo "executing target all"	
+	
+
+	
+
+explainer: file0.txt file1.txt  
+	@echo "executing target explainer"
+	@echo 'list of deps:     ' $^
+	@echo 'target name:      ' $@
+	@echo 'the first deps:   ' $<
+	@echo 'out-of-date deps: ' $?
+	
+# file0.txt file1.txt:
+		# @echo "executing target file0.txt file1.txt"
+		# @touch file0.txt
+		# @touch file1.txt
+
+%.txt:
+		@echo "executing the target for making text files"
+		@touch file0.txt
+		@touch file1.txt
+
+
+clean:
+	rm -f file0.txt file1.txt
+	
+.PHONEY: all clean

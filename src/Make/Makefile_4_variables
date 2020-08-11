@@ -1,0 +1,44 @@
+# the content of this tutorial is largely taken from "https://learnxinyminutes.com/docs/make/".
+
+# There are 4 places to set variable:
+# 1- Commandline arguments:      make target  name=erfan 
+# 2- Inside the makefile, as is done in here.
+# 3- Shell environment vars: All variables you can see here: printenv
+# 4- Make built-in vars (see below)
+
+# variables are all string types
+family="Zamanian"
+family2=Zamanian # same thing
+fullname = $(name)
+fullname += $(family)  # appending (it also includes a space)
+
+# lazy assignment vs immediate assignment
+id = 24
+var_lazy  = $(family)_$(id)	   # evaluated recursively everytime it is used (so can change).
+var_imm   :=  $(family)_$(id)  # evaluated immediately, so will not change later
+id = 99
+
+
+all: echo_vars echo_builtin
+
+echo_vars:
+	@echo "printing commandline and user-defined vars:"
+	@echo '$$name is:      ' $(name)
+	@echo 'equivalent:    ' ${name} # this is exactly the same as $() 
+	@echo 'Full name:     ' $(fullname)
+	@echo 'var_lazy:      ' $(var_lazy)
+	@echo 'var_imm:       ' $(var_imm)
+	#@echo $name # won't work, treated as $n
+	@echo 'undefined var: '$(alaki) # unknown vars are treated as empty string	
+	@echo "\n"
+	
+# make has some built-in  variables
+echo_builtin:
+	@echo "built-in vars:"
+	@echo "CC:  " $(CC)
+	@echo "CXX: " ${CXX}
+	@echo "CFLAGS: " ${CFLAGS}
+	@echo "CPPFLAGS: " $(CPPFLAGS)
+	@echo "CXXFLAGS: " ${CXXFLAGS}
+	@echo "LDFLAGS:  " $(LDFLAGS)
+	@echo "LDLIBS:   " ${LDLIBS}

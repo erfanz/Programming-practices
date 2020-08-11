@@ -1,0 +1,18 @@
+# @echo "Foo: "$FOO   Note that you cannot use echo outside of rules
+# $(info NAME is [${NAME}])
+# $(warning NAME is [${NAME}])
+# $(error NAME is [${NAME}])
+
+
+# make has lots of functions available.
+
+sourcefiles = $(wildcard *.c */*.c)
+objectfiles = $(patsubst %.c,%.o,$(sourcefiles))
+
+# Format is $(func arg0,arg1,arg2...)
+
+# Some examples
+ls: * src/*
+    @echo $(filter %.txt, $^)
+    @echo $(notdir $^)
+    @echo $(join $(dir $^),$(notdir $^))

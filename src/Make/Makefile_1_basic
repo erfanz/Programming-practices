@@ -1,0 +1,34 @@
+# the content of this tutorial is largely taken from "https://learnxinyminutes.com/docs/make/".
+ 
+# since our file is makefile is not named Makefile, we have to run it with make -f filename
+
+# To execute:
+# make -f Makefile_1_basic              ---> it executes the defailut rule (which is the first rule)
+# make -f Makefile_1_basic file1.txt    ---> it executes the rule named `file1.txt`
+
+# The makefile consists of one or many rules. 
+
+# Rules are of the format
+# target: <prerequisite>
+# where prerequisites are optional.
+
+
+# A rule - this rule will only run if file0.txt doesn't exist.
+file0.txt:
+	echo "file0 doesn't exist"
+	# each command gets echoed to stdout. To prevent that, use @
+	@echo "Some initial content" > file0.txt
+	# Even comments gets passed to the shell
+
+# Note that each rule can be specifically invoked by "make <target>". for example, the below rule
+# can be invoked "make file1.txt". The first rule is default, so "make file0.txt" is equal to "make"  
+# The following rule will only execute if file0.txt is newer than file1.txt
+file1.txt: file0.txt
+	@cat file0.txt > file1.txt
+	-@echo 'hello'  
+	# - means that even if an error occurs, make will keep going
+	
+# you can have rules that have multiple targets and multiple prerequisits
+file2.txt file3.txt: file1.txt file0.txt
+	touch file2.txt
+	touch file3.txt
