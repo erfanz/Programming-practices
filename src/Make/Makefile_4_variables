@@ -17,6 +17,7 @@ id = 24
 var_lazy  = $(family)_$(id)	   # evaluated recursively everytime it is used (so can change).
 var_imm   :=  $(family)_$(id)  # evaluated immediately, so will not change later
 id = 99
+$(info new value for $$id is ${id})	# This is how you print sth outside of targets
 
 
 all: echo_vars echo_builtin
