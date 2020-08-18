@@ -1,0 +1,17 @@
+# Taken from https://makefiletutorial.com
+
+# Make was largely made for GCC, and so makes compiling C/C++ programs “easy”.
+
+# Implicit command of: "cc blah.o -o blah"
+blah:
+
+# Implicit command of: "cc blah.c -c -o blah.o"
+blah.o:
+
+
+blah.c:
+	echo "int main(){return 0;}" > blah.c
+	
+clean:
+	rm -f blah*
+
